@@ -183,13 +183,11 @@ test_set <- clean_data[-partition,]
 
 ``` {r}
 model_1 <- rpart(
-  formula = salePrice ~ neighborhood + houseStyle + houseZone + houseUtilities + remodelated + pool + livingArea + yearBuilt,
+  formula = salePrice ~ neighborhood + houseStyle + houseZone + houseUtilities + remodelated + pool + livingArea + yearBuilt
+                        + overallQuality + overallCondition,
   data    = train_set,
   method  = "anova"
   )
-summary(model_1)
-```
-```{r}
 rpart.plot(model_1)
 ```
 
@@ -206,8 +204,69 @@ abs_error_1 <- abs(mean(y_pred_1 - test_set$salePrice))
 
 El RMSE para el modelo 1 es `r rmse_model_1` y el error absoluto es `r abs_error_1`. Esto quiere decir que, en promedio hubo un error de USD 3040.
 
-
 ## 4 - Haciendo más modelos
+```{r}
+model_2 <- rpart(
+  formula = salePrice ~ neighborhood + houseStyle + houseZone + houseUtilities + remodelated + pool + livingArea + yearBuilt
+                        + overallQuality + overallCondition,
+  data    = train_set,
+  method  = "anova",
+  control = list(maxdepth = 3)
+  )
+rpart.plot(model_2)
+```
+
+```{r}
+model_3 <- rpart(
+  formula = salePrice ~ neighborhood + houseStyle + houseZone + houseUtilities + remodelated + pool + livingArea + yearBuilt
+                        + overallQuality + overallCondition,
+  data    = train_set,
+  method  = "anova",
+  control = list(maxdepth = 2)
+  )
+rpart.plot(model_3)
+```
 
 
+```{r}
+model_4 <- rpart(
+  formula = salePrice ~ neighborhood + houseStyle + houseZone + houseUtilities + remodelated + pool + livingArea + yearBuilt
+                        + overallQuality + overallCondition,
+  data    = train_set,
+  method  = "anova",
+  control = list(maxdepth = 1)
+  )
+rpart.plot(model_4)
+```
+
+Comparando resultados
+```{r echo= FALSE}
+# Modelo 2
+y_pred_2 <- predict(model_2, newdata = test_set)
+rmse_model_2 <- RMSE(pred = y_pred_2, obs = test_set$salePrice)
+abs_error_2 <- abs(mean(y_pred_2 - test_set$salePrice))
+# Modelo 3
+y_pred_3 <- predict(model_3, newdata = test_set)
+rmse_model_3 <- RMSE(pred = y_pred_3, obs = test_set$salePrice)
+abs_error_3 <- abs(mean(y_pred_2 - test_set$salePrice))
+# Modelo 4
+y_pred_4 <- predict(model_4, newdata = test_set)
+rmse_model_4 <- RMSE(pred = y_pred_4, obs = test_set$salePrice)
+abs_error_4 <- abs(mean(y_pred_4 - test_set$salePrice))
+```
+
+```{r echo=FALSE}
+model_results <- data.frame(
+  c("Modelo 1", "Modelo 2", "Modelo 3", "Modelo"),
+  c(rmse_model_1, rmse_model_2, rmse_model_3, rmse_model_4),
+  c(abs_error_1, abs_error_2, abs_error_3, abs_error_4)
+)
+
+colnames(model_results) <- c("","RMSE", "Error Absoluto")
+kable(model_results)
+```
+El modelo 2 tiene un valor menor en el RMSE y en el error absoluto. Podemos utilizar este modelo para compararlo con la regresión lineal utilizada en el ejercicio anterior
 ## 5 - Comparando con hoja anterior
+
+
+
