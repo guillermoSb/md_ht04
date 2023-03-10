@@ -467,8 +467,15 @@ rpart.plot(model_4)</code></pre>
 </table>
 <p>El modelo 2 tiene un valor menor en el RMSE y en el error absoluto.
 Podemos utilizar este modelo para compararlo con la regresión lineal
-utilizada en el ejercicio anterior ## 5 - Comparando con hoja
-anterior</p>
+utilizada en el ejercicio anterior ## 5 - Comparando con modelo de
+regresión lineal multivariable</p>
+<pre class="r"><code>multi_variable_model &lt;- lm(salePrice ~ neighborhood + remodelated + roofStyle + overallQuality + overallCondition + garageArea + livingArea + yearBuilt, data=train_set)
+
+prediction_multi&lt;- predict(multi_variable_model, test_set, type=&quot;response&quot;)
+rmse_model_multi &lt;- RMSE(pred = prediction_multi, obs = test_set$salePrice)
+abs_error_multi &lt;- abs(mean(prediction_multi - test_set$salePrice))</code></pre>
+<p>El error absoluto para este modelo es 1314.3656456 y el RMSE es
+4.5178048^{4}</p>
 </div>
 </div>
 

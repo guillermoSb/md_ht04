@@ -266,7 +266,15 @@ colnames(model_results) <- c("","RMSE", "Error Absoluto")
 kable(model_results)
 ```
 El modelo 2 tiene un valor menor en el RMSE y en el error absoluto. Podemos utilizar este modelo para compararlo con la regresión lineal utilizada en el ejercicio anterior
-## 5 - Comparando con hoja anterior
+## 5 - Comparando con modelo de regresión lineal multivariable
+```{r}
+multi_variable_model <- lm(salePrice ~ neighborhood + remodelated + roofStyle + overallQuality + overallCondition + garageArea + livingArea + yearBuilt, data=train_set)
 
+prediction_multi<- predict(multi_variable_model, test_set, type="response")
+rmse_model_multi <- RMSE(pred = prediction_multi, obs = test_set$salePrice)
+abs_error_multi <- abs(mean(prediction_multi - test_set$salePrice))
+```
+
+El error absoluto para este modelo es `r abs_error_multi` y el RMSE es `r rmse_model_multi`
 
 
