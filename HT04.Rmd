@@ -1,0 +1,213 @@
+# Hoja de Trabajo 04 - Árboles de Decisión
+
+
+```{r echo=FALSE}
+library(dplyr)
+library(knitr)
+library(rpart)       # performing regression trees
+library(rsample)     # data splitting 
+library(rpart.plot)  # plotting regression trees
+library(ipred)       # bagging
+library(caret)       # bagging
+```
+
+## 1 - Separando el dataset en prueba y entrenamiento
+```{r echo=FALSE}
+data <- read.csv("train.csv")
+```
+
+### Limpiando los datos
+```{r echo=FALSE}
+columns_used <- c()
+neighborhoodNames <- c("NoRidge", "NridgHt", "StoneBr", "Timber", "Veenker", "Somerst", "ClearCr", "Crawfor", "CollgCr", "Blmngtn", "Gilbert", "NWAmes", "SawyerW", "Mitchel", "NAmes", "NPkVill", "SWISU", "Blueste", "Sawyer", "OldTown", "Edwards", "BrkSide", "BrDale", "IDOTRR", "MeadowV")
+
+for(n in 1:length(neighborhoodNames)) {
+  # Variable minuscula para nuestro uso.
+  data$neighborhood[data$Neighborhood == neighborhoodNames[n]] <- n
+}
+columns_used <- append(columns_used, "neighborhood")
+
+hs <- c("1Story", "2Story",	"1.5Fin",	"SLvl", "SFoyer")
+
+for(n in 1:length(hs)) {
+  # Variable minuscula para nuestro uso.
+  data$houseStyle[data$HouseStyle == hs[n]] <- n
+}
+columns_used <- append(columns_used, "houseStyle")
+
+ data$houseZone[data$MSZoning == "A"] <- 1
+ data$houseZone[data$MSZoning == "C"] <- 2
+ data$houseZone[data$MSZoning == "FV"] <- 3
+ data$houseZone[data$MSZoning == "I"] <- 4
+ data$houseZone[data$MSZoning == "RH"] <- 5
+ data$houseZone[data$MSZoning == "RL"] <- 6
+ data$houseZone[data$MSZoning == "RP"] <- 7
+ data$houseZone[data$MSZoning == "RM"] <- 8
+ columns_used <- append(columns_used, "houseZone")
+
+data$houseUtilities[data$Utilities == "AllPub"] <- 1
+data$houseUtilities[data$Utilities == "NoSewr"] <- 2
+data$houseUtilities[data$Utilities == "NoSeWa"] <- 3
+data$houseUtilities[data$Utilities == "ELO"] <- 4
+columns_used <- append(columns_used, "houseUtilities")
+
+data$roadAccess[data$Condition1 == "Artery"] <- 1
+data$roadAccess[data$Condition1 == "Feedr"] <- 2
+data$roadAccess[data$Condition1 == "Norm"] <- 3
+data$roadAccess[data$Condition1 == "RRNn"] <- 4
+data$roadAccess[data$Condition1 == "RRAn"] <- 5
+data$roadAccess[data$Condition1 == "PosN"] <- 6
+data$roadAccess[data$Condition1 == "PosA"] <- 7
+data$roadAccess[data$Condition1 == "RRNe"] <- 8
+data$roadAccess[data$Condition1 == "RRAe"] <- 9
+columns_used <- append(columns_used, "roadAccess")
+
+data$remodelated[data$YearBuilt != data$YearRemodAdd] <- 1
+data$remodelated[data$YearBuilt == data$YearRemodAdd] <- 0
+columns_used <- append(columns_used, "remodelated")
+
+data$roofStyle[data$RoofStyle == "Flat"]  <- 1
+data$roofStyle[data$RoofStyle == "Gable"]  <- 2
+data$roofStyle[data$RoofStyle == "Gambrel"]  <- 3
+data$roofStyle[data$RoofStyle == "Hip"]  <- 4
+data$roofStyle[data$RoofStyle == "Mansard"]  <- 5
+data$roofStyle[data$RoofStyle == "Shed"]  <- 6
+columns_used <- append(columns_used, "roofStyle")
+
+data$roofMaterial[data$RoofMatl == "ClyTile"] <- 1
+data$roofMaterial[data$RoofMatl == "CompShg"] <- 2
+data$roofMaterial[data$RoofMatl == "Membran"] <- 3
+data$roofMaterial[data$RoofMatl == "Metal"] <- 4
+data$roofMaterial[data$RoofMatl == "Roll"] <- 5
+data$roofMaterial[data$RoofMatl == "Tar&Grv"] <- 6
+data$roofMaterial[data$RoofMatl == "WdShake"] <- 7
+data$roofMaterial[data$RoofMatl == "WdShngl"] <- 8
+columns_used <- append(columns_used, "roofMaterial")
+
+data$overallQuality <- data$OverallQual
+columns_used <- append(columns_used, "overallQuality")
+
+data$overallCondition <- data$OverallCond
+columns_used <- append(columns_used, "overallCondition")
+
+
+data$exteriorCondition[data$ExterCond == "Po"] <- 1
+data$exteriorCondition[data$ExterCond == "Fa"] <- 2
+data$exteriorCondition[data$ExterCond == "TA"] <- 3
+data$exteriorCondition[data$ExterCond == "Gd"] <- 4
+data$exteriorCondition[data$ExterCond == "Ex"] <- 5
+columns_used <- append(columns_used, "exteriorCondition")
+
+data$foundationMaterial[data$Foundation == "BrkTil"] <- 1
+data$foundationMaterial[data$Foundation == "CBlock"] <- 2
+data$foundationMaterial[data$Foundation == "PConc"] <- 3
+data$foundationMaterial[data$Foundation == "Slab"] <- 4
+data$foundationMaterial[data$Foundation == "Stone"] <- 5
+data$foundationMaterial[data$Foundation == "Wood"] <- 6
+columns_used <- append(columns_used, "foundationMaterial")
+
+data$basement[is.na(data$BsmtQual)] <- 0
+data$basement[!is.na(data$BsmtQual)] <- 1
+columns_used <- append(columns_used, "basement")
+
+data$basementCondition[data$BsmtCond == "Ex"] <- 3
+data$basementCondition[data$BsmtCond == "Gd"] <- 2
+data$basementCondition[data$BsmtCond != "Ex"] <- 1
+data$basementCondition[data$BsmtCond != "Gd"] <- 1
+data$basementCondition[is.na(data$BsmtCond)] <- 0
+columns_used <- append(columns_used, "basementCondition")
+
+data$fireplace[is.na(data$FireplaceQu)] <- 0
+data$fireplace[!is.na(data$FireplaceQu)] <- 1
+columns_used <- append(columns_used, "fireplace")
+
+data$garageArea <- data$GarageArea
+columns_used <- append(columns_used, "garageArea")
+
+data$pool[is.na(data$PoolQC)] <- 0
+data$pool[!is.na(data$PoolQC)] <- 1
+columns_used <- append(columns_used, "pool")
+
+data$additionalFeature[is.na(data$MiscFeature)] <- 0
+data$additionalFeature[!is.na(data$MiscFeature)] <- 1
+columns_used <- append(columns_used, "additionalFeature")
+
+data$livingArea <- data$GrLivArea
+columns_used <- append(columns_used, "livingArea")
+
+data$yearBuilt <- data$YearBuilt
+columns_used <- append(columns_used, "yearBuilt")
+
+
+data$salePrice <- data$SalePrice
+columns_used <- append(columns_used, "salePrice")
+
+tv <- c("WD", "Oth", "New", "ConLw", "ConLI", "ConLD", "Con", "CWD", "COD")
+
+for(n in 1:length(tv)) {
+  # Variable minuscula para nuestro uso.
+  data$saleType[data$SaleType == tv[n]] <- n
+}
+columns_used <- append(columns_used, "saleType")
+
+msz <- c("FV", "RL", "RH", "RM" , "C (all)")
+
+for(n in 1:length(msz)) {
+  # Variable minuscula para nuestro uso.
+  data$mSZoning[data$MSZoning == msz[n]] <- n
+}
+columns_used <- append(columns_used, "mSZoning")
+
+clean_data <- subset(data, select = columns_used)
+```
+
+Columnas a utilizar (basándonos en el análisis exploratorio de la hoja anterior):
+```{r}
+print(paste(columns_used,collapse=' '))
+```
+
+Un 75% del dataset se usará para entrenar el árbol.
+``` {r}
+set.seed(5)
+expected_result <- clean_data$salePrice
+partition <- createDataPartition(y=expected_result,
+                                 p=.75,
+                                 list=F)
+train_set <- clean_data[partition,]
+test_set <- clean_data[-partition,]
+```
+
+
+
+## 2 - Árbol de regresión
+
+``` {r}
+model_1 <- rpart(
+  formula = salePrice ~ neighborhood + houseStyle + houseZone + houseUtilities + remodelated + pool + livingArea + yearBuilt,
+  data    = train_set,
+  method  = "anova"
+  )
+summary(model_1)
+```
+```{r}
+rpart.plot(model_1)
+```
+
+
+## 3 - Realizando predicciones
+
+```{r}
+y <- test_set[,c("salePrice")]
+
+y_pred_1 <- predict(model_1, newdata = test_set)
+rmse_model_1 <- RMSE(pred = y_pred_1, obs = test_set$salePrice)
+abs_error_1 <- abs(mean(y_pred_1 - test_set$salePrice))
+```
+
+El RMSE para el modelo 1 es `r rmse_model_1` y el error absoluto es `r abs_error_1`. Esto quiere decir que, en promedio hubo un error de USD 3040.
+
+
+## 4 - Haciendo más modelos
+
+
+## 5 - Comparando con hoja anterior
