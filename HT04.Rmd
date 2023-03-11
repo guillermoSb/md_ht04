@@ -190,6 +190,9 @@ model_1 <- rpart(
   )
 rpart.plot(model_1)
 ```
+```{r}
+nrow(clean_data)
+```
 
 
 ## 3 - Realizando predicciones
@@ -200,6 +203,8 @@ y <- test_set[,c("salePrice")]
 y_pred_1 <- predict(model_1, newdata = test_set)
 rmse_model_1 <- RMSE(pred = y_pred_1, obs = test_set$salePrice)
 abs_error_1 <- abs(mean(y_pred_1 - test_set$salePrice))
+mean_error_1 <- y-y_pred_1
+mean_error_1 <- mean(mean_error_1)
 ```
 
 El RMSE para el modelo 1 es `r rmse_model_1` y el error absoluto es `r abs_error_1`. Esto quiere decir que, en promedio hubo un error de USD 3040.
@@ -293,8 +298,7 @@ train_set$economy <- ifelse(train_set$salePrice < 163000, "Economic", ifelse(tra
 Dado que en el histograma basado en los precios de casas hay un sesgo hacia la izquierda se toma como medida de tendencia central la mediana ya que esta nos permite saber la ubicación central de los datos. Además, se toma en cuenta que los cuartiles nos dan una referencia de donde poder colocar los rangos de precios.
 
 
-## 7 - Arbol de clasificación utilizando la variable respuesta
-
+## 7 - Árbol de clasificación utilizando la variable respuesta
 ```{r}
 train_set <- train_set %>% mutate_at(c("economy"), as.factor)
 test_set <- test_set %>% mutate_at(c("economy"), as.factor)
@@ -307,22 +311,19 @@ arbol_modelo <- rpart(economy~., train_set, method="class")
 rpart.plot(arbol_modelo)
 ```
 
-## 8 - Utilizar modelo con el conjunto de prueba y determinar eficiencia del algoritmo
+
+## 8 - Utilizando modelo con el conjunto de prueba para determinar eficiencia del algoritmo
 
 ```{r}
-y <- test_set[,24]
-test <- test_set[,-24]
+y8 <- test_set[,c("salePrice")]
 
-colnames(train_set)
-colnames(test)
-
-ypred <- predict(arbol_modelo, newdata = test)
-ypred <- apply(ypred, 1, function(x) colnames(ypred)[which.max(x)])
-ypred <- factor(ypred)
+y_pred_8 <- predict(arbol_modelo, newdata = test_set)
+rmse_model_8 <- RMSE(pred = y_pred_8, obs = test_set$salePrice)
+abs_error_8 <- abs(mean(y_pred_8 - test_set$salePrice))
+mean_error_8 <- mean(y8-y_pred_8)
 ```
+El RMSE para el modelo 1 es `r rmse_model_1` y el error absoluto es `r abs_error_1`. Tomando en cuenta los valores reales y los que se predicieron se sabe que en promedio hubo un error de USD `r mean_error_8`.
 
-## 9 - Analisis de eficiencia del algoritmo usando una matriz de confusion
 
-``` {r}
-confusionMatrix(ypred, y)
-```
+
+
