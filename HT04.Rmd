@@ -290,17 +290,35 @@ Referencias para decidir el rango del precio:
 
 ```{r}
 #economy_var_answer <- ifelse(data$salePrice < 150000, "Económicas", ifelse(data$salePrice >= 150000 & data$salePrice <= 400000, "Intermedias", "Caras"))
-data$economy <- ifelse(data$salePrice < 150000, "Económicas", ifelse(data$salePrice >= 150000 & data$salePrice <= 400000, "Intermedias", "Caras"))
+train_set$economy <- ifelse(train_set$salePrice < 150000, "Económicas", ifelse(train_set$salePrice >= 150000 & train_set$salePrice <= 400000, "Intermedias", "Caras"))
+test_set$economy <- ifelse(test_set$salePrice < 150000, "Económicas", ifelse(test_set$salePrice >= 150000 & test_set$salePrice <= 400000, "Intermedias", "Caras"))
 ```
 
 
 ## 7 - Arbol de clasificación utilizando la variable respuesta creada en el punto 6
 
 ```{r}
-arbol_modelo <- rpart(economy~., data, method="class")
+arbol_modelo <- rpart(economy~., train_set, method="class")
 # Mostrar el modelo gráficamente
 rpart.plot(arbol_modelo)
 ```
 
+## 8 - Utilizar modelo con el conjunto de prueba y determinar eficiencia del algoritmo
 
+```{r}
+y <- test_set[,24]
+test <- test_set[,-24]
 
+colnames(train_set)
+colnames(test)
+
+ypred <- predict(arbol_modelo, newdata = test)
+ypred <- apply(ypred, 1, function(x) colnames(ypred)[which.max(x)])
+ypred <- factor(ypred)
+```
+
+## 9 - Analisis de eficiencia del algoritmo usando una matriz de confusion
+
+``` {r}
+confusionMatrix(ypred, y)
+```
