@@ -322,7 +322,7 @@ rmse_model_8 <- RMSE(pred = y_pred_8, obs = test_set$salePrice)
 abs_error_8 <- abs(mean(y_pred_8 - test_set$salePrice))
 mean_error_8 <- mean(y8-y_pred_8)
 ```
-El RMSE para el modelo 1 es `r rmse_model_1` y el error absoluto es `r abs_error_1`. Tomando en cuenta los valores reales y los que se predijeron se sabe que en promedio hubo un error en promedio de USD `r mean_error_8`.
+El RMSE para el modelo de árbol de clasificación es `r rmse_model_8` y el error absoluto es `r abs_error_8`. Tomando en cuenta los valores reales y los que se predijeron se sabe que en promedio hubo un error en promedio de USD `r mean_error_8`.
 
 
 ## 9 - Análisis de eficiencia usando matriz de confusión
