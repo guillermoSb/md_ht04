@@ -286,16 +286,17 @@ summary(clean_data$salePrice)
 En el histograma se puede ver un sesgo hacia la izquierda.
 
 ```{r}
-data$housePriceCategory <- ifelse(data$salePrice < 163000, "Economic", ifelse(data$salePrice >= 163000 & data$salePrice <= 214000, "Average", "Expensive"))
+test_set$housePriceCategory <- ifelse(test_set$salePrice < 163000, "Economic", ifelse(test_set$salePrice >= 163000 & test_set$salePrice <= 214000, "Average", "Expensive"))
+
+train_set$housePriceCategory <- ifelse(train_set$salePrice < 163000, "Economic", ifelse(train_set$salePrice >= 163000 & train_set$salePrice <= 214000, "Average", "Expensive"))
 ```
 Dado que en el histograma basado en los precios de casas hay un sesgo hacia la izquierda se toma como medida de tendencia central la mediana ya que esta nos permite saber la ubicación central de los datos. Además, se toma en cuenta que los cuartiles nos dan una referencia de donde poder colocar los rangos de precios.
 
 
-## 7 - Arbol de clasificación utilizando la variable respuesta creada en el punto 6
+## 7 - Arbol de clasificación utilizando la variable respuesta
 
 ```{r}
 arbol_modelo <- rpart(economy~., train_set, method="class")
-# Mostrar el modelo gráficamente
 rpart.plot(arbol_modelo)
 ```
 
