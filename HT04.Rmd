@@ -277,4 +277,30 @@ abs_error_multi <- abs(mean(prediction_multi - test_set$salePrice))
 
 El error absoluto para este modelo es `r abs_error_multi` y el RMSE es `r rmse_model_multi`
 
+## 6 - Crear una variable respuesta donde podamos clasificar en (Economias, Intermedias o Caras) en base al analisis exploratorio elaborado.
+
+Limites y rangos establecidos para filtrar la economia de las casas:
+- Economicas: precio < $150000
+- Intermedias: precio >= $150000 and precio <= $400000
+- Caras: precio > $400000
+
+Referencias para decidir el rango del precio:
+-> https://www.realtor.com/realestateandhomes-search/Iowa-State-University_Ames_IA
+-> https://www.redfin.com/neighborhood/759899/IA/Ames/Iowa-State-University/housing-market
+
+```{r}
+#economy_var_answer <- ifelse(data$salePrice < 150000, "Económicas", ifelse(data$salePrice >= 150000 & data$salePrice <= 400000, "Intermedias", "Caras"))
+data$economy <- ifelse(data$salePrice < 150000, "Económicas", ifelse(data$salePrice >= 150000 & data$salePrice <= 400000, "Intermedias", "Caras"))
+```
+
+
+## 7 - Arbol de clasificación utilizando la variable respuesta creada en el punto 6
+
+```{r}
+arbol_modelo <- rpart(economy~., data, method="class")
+# Mostrar el modelo gráficamente
+rpart.plot(arbol_modelo)
+```
+
+
 
