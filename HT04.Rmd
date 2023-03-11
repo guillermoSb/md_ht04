@@ -292,14 +292,15 @@ train_set$economy <- ifelse(train_set$salePrice < 163000, "Economic", ifelse(tra
 ```
 Dado que en el histograma basado en los precios de casas hay un sesgo hacia la izquierda se toma como medida de tendencia central la mediana ya que esta nos permite saber la ubicación central de los datos. Además, se toma en cuenta que los cuartiles nos dan una referencia de donde poder colocar los rangos de precios.
 
-```{r}
-test_set <- test_set %>% mutate_at(c("economy"), as.factor)
-train_set <- train_set %>% mutate_at(c("economy"), as.factor)
-```
-
-
 
 ## 7 - Arbol de clasificación utilizando la variable respuesta
+
+```{r}
+train_set <- train_set %>% mutate_at(c("economy"), as.factor)
+test_set <- test_set %>% mutate_at(c("economy"), as.factor)
+train_set <- train_set[,-21]
+```
+
 
 ```{r}
 arbol_modelo <- rpart(economy~., train_set, method="class")
