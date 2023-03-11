@@ -277,22 +277,18 @@ abs_error_multi <- abs(mean(prediction_multi - test_set$salePrice))
 
 El error absoluto para este modelo es `r abs_error_multi` y el RMSE es `r rmse_model_multi`
 
-## 6 - Crear una variable respuesta donde podamos clasificar en (Economias, Intermedias o Caras) en base al analisis exploratorio elaborado.
-
-Limites y rangos establecidos para filtrar la economia de las casas:
-- Economicas: precio < $150000
-- Intermedias: precio >= $150000 and precio <= $400000
-- Caras: precio > $400000
-
-Referencias para decidir el rango del precio:
--> https://www.realtor.com/realestateandhomes-search/Iowa-State-University_Ames_IA
--> https://www.redfin.com/neighborhood/759899/IA/Ames/Iowa-State-University/housing-market
+## 6 - Variable respuesta
+### Análisis exploratorio
+```{r}
+hist(clean_data$salePrice)
+summary(clean_data$salePrice)
+```
+En el histograma se puede ver un sesgo hacia la izquierda.
 
 ```{r}
-#economy_var_answer <- ifelse(data$salePrice < 150000, "Económicas", ifelse(data$salePrice >= 150000 & data$salePrice <= 400000, "Intermedias", "Caras"))
-train_set$economy <- ifelse(train_set$salePrice < 150000, "Económicas", ifelse(train_set$salePrice >= 150000 & train_set$salePrice <= 400000, "Intermedias", "Caras"))
-test_set$economy <- ifelse(test_set$salePrice < 150000, "Económicas", ifelse(test_set$salePrice >= 150000 & test_set$salePrice <= 400000, "Intermedias", "Caras"))
+data$housePriceCategory <- ifelse(data$salePrice < 163000, "Economic", ifelse(data$salePrice >= 163000 & data$salePrice <= 214000, "Average", "Expensive"))
 ```
+Dado que en el histograma basado en los precios de casas hay un sesgo hacia la izquierda se toma como medida de tendencia central la mediana ya que esta nos permite saber la ubicación central de los datos. Además, se toma en cuenta que los cuartiles nos dan una referencia de donde poder colocar los rangos de precios.
 
 
 ## 7 - Arbol de clasificación utilizando la variable respuesta creada en el punto 6
