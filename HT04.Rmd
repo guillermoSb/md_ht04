@@ -337,6 +337,9 @@ ypred9 <- factor(ypred9)
 
 confusionMatrix(ypred9, y9)
 ```
+Nos da un 80.72% de accuracy con esto se puede deducir que el modelo no está mal, sin embargo no es posible concluir con que indica que el modelo sea tan bueno. Además, se puede ver que predijo 60 valores para categoria average correctamente, 165 valores para la categoria economic correctamente y 68 valores para la categoria expensive correctamente. Donde más fallos en la predicción hubo fue cuando predijo que 26 valores pertenecian a la categoria economic cuando verdaderamente pertenecian a la categoria average.
+
+## 10 - Entrenación de modelo con cross validation
 
 
 
