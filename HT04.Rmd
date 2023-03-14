@@ -341,7 +341,10 @@ Nos da un 80.72% de accuracy con esto se puede deducir que el modelo no está ma
 
 ## 10 - Entrenación de modelo con cross validation
 
-
+```{r}
+ct <- trainControl(method="cv", number=10, verboseIter=T)
+modelo10 <- train(train_set[-22], train_set$economy, trControl = ct, method = "rpart")
+```
 
 
 
