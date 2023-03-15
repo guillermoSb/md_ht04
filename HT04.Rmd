@@ -314,16 +314,20 @@ rpart.plot(arbol_modelo)
 
 
 ## 8 - Utilizando modelo con el conjunto de prueba para determinar eficiencia del algoritmo
-
 ```{r}
-y8 <- test_set[,c("salePrice")]
+
+y8 <- test_set[,c("economy")]
+y8 <- as.numeric(y8)
 
 y_pred_8 <- predict(arbol_modelo, newdata = test_set)
-rmse_model_8 <- RMSE(pred = y_pred_8, obs = test_set$salePrice)
-abs_error_8 <- abs(mean(y_pred_8 - test_set$salePrice))
-mean_error_8 <- mean(y8-y_pred_8)
+y_pred_8 <- as.numeric(y_pred_8)
+
+
+y8_mean <- mean(y8, na.rm = TRUE)
+y_pred_8_mean <- mean(y_pred_8, na.rm = TRUE)
 ```
-El RMSE para el modelo de árbol de clasificación es `r rmse_model_8` y el error absoluto es `r abs_error_8`. Tomando en cuenta los valores reales y los que se predijeron se sabe que en promedio hubo un error en promedio de USD `r mean_error_8`.
+No es posible establecer una alta eficiencia del algoritmo ya que la diferencia entre el promedio del conjunto de la data predicha `r y_pread8_mean` y real es considerable `r y8_mean`. 
+
 
 
 ## 9 - Análisis de eficiencia usando matriz de confusión
