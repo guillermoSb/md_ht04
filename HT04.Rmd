@@ -330,9 +330,9 @@ El RMSE para el modelo de árbol de clasificación es `r rmse_model_8` y el erro
 
 ```{r}
 y9 <- test_set[,24]
-test_set <- test_set[,-24]
+test_set9 <- test_set[,-24]
 
-ypred9 <- predict(arbol_modelo, newdata = test_set)
+ypred9 <- predict(arbol_modelo, newdata = test_set9)
 ypred9 <- apply(ypred9, 1, function(x) colnames(ypred9)[which.max(x)])
 ypred9 <- factor(ypred9)
 
@@ -420,6 +420,22 @@ Entre todos los modelos el que mejor funciona es el modelo 2 cuyo valor de profu
 ### 12 - Repetir los análisis usando random forest como algoritmos de predicción 
 
 ```{r}
-
+modelo12 <- randomForest(economy~.,train_set, na.action = na.omit)
+summary(modelo12)
 ```
+Se omitieron 30 na.
 
+```{r}
+modelo12
+```
+La taza estimada de error fue de 15.84%, se realizaron 500 árboles y se trataron 4 variables en cada split.
+
+
+```{r}
+y12 <- test_set[,24]
+test_set12 <- test_set[,-24]
+randonForestMo <-randomForest(economy~.,train_set, na.action = na.omit)
+ypred12 <- predict(randonForestMo, newdata = test_set12)
+ypred12 <- factor(ypred12)
+confusionMatrix(ypred12, y12)
+```
