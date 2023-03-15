@@ -346,7 +346,7 @@ Nos da un 80.72% de accuracy con esto se puede deducir que el modelo no está ma
 ct <- trainControl(method="cv", number=10, verboseIter=T)
 modelo10 <- train(train_set[-23], train_set$economy, trControl = ct, method = "rpart")
 ```
-
+El parámetro de complejidad para ajustar el modelo es el mismo en todas las iteraciones, siendo de 0.05566 y el parámetro de complejidad ajustado de 0.0557 en el conjunto de entrenamiento.
 
 ## 11 - Crear 3 modelos más cambiando la profundidad del árbol
 
