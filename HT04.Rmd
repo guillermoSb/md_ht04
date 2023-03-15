@@ -9,6 +9,7 @@ library(rsample)     # data splitting
 library(rpart.plot)  # plotting regression trees
 library(ipred)       # bagging
 library(caret)       # bagging
+library(randomForest)
 ```
 
 ## 1 - Separando el dataset en prueba y entrenamiento
@@ -339,11 +340,11 @@ confusionMatrix(ypred9, y9)
 ```
 Nos da un 80.72% de accuracy con esto se puede deducir que el modelo no está mal, sin embargo no es posible concluir con que indica que el modelo sea tan bueno. Además, se puede ver que predijo 60 valores para categoria average correctamente, 165 valores para la categoria economic correctamente y 68 valores para la categoria expensive correctamente. Donde más fallos en la predicción hubo fue cuando predijo que 26 valores pertenecian a la categoria economic cuando verdaderamente pertenecian a la categoria average.
 
-## 10 - Entrenación de modelo con cross validation
+## 10 - Entrenamiento de modelo con cross validation
 
 ```{r}
 ct <- trainControl(method="cv", number=10, verboseIter=T)
-modelo10 <- train(train_set[-22], train_set$economy, trControl = ct, method = "rpart")
+modelo10 <- train(train_set[-23], train_set$economy, trControl = ct, method = "rpart")
 ```
 
 
