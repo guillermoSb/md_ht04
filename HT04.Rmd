@@ -253,7 +253,7 @@ abs_error_2 <- abs(mean(y_pred_2 - test_set$salePrice))
 # Modelo 3
 y_pred_3 <- predict(model_3, newdata = test_set)
 rmse_model_3 <- RMSE(pred = y_pred_3, obs = test_set$salePrice)
-abs_error_3 <- abs(mean(y_pred_2 - test_set$salePrice))
+abs_error_3 <- abs(mean(y_pred_3 - test_set$salePrice))
 # Modelo 4
 y_pred_4 <- predict(model_4, newdata = test_set)
 rmse_model_4 <- RMSE(pred = y_pred_4, obs = test_set$salePrice)
@@ -347,4 +347,78 @@ modelo10 <- train(train_set[-22], train_set$economy, trControl = ct, method = "r
 ```
 
 
+## 11 - Crear 3 modelos más cambiando la profundidad del árbol
+
+Modelo extra #1
+``` {r}
+model_extra_1 <- rpart(
+  formula = salePrice ~ neighborhood + houseStyle + houseZone + houseUtilities + remodelated + pool + livingArea + yearBuilt
+                        + overallQuality + overallCondition,
+  data    = train_set,
+  method  = "anova",
+  control = list(maxdepth = 0)
+  )
+rpart.plot(model_extra_1)
+```
+
+Modelo extra #2
+``` {r}
+model_extra_2 <- rpart(
+  formula = salePrice ~ neighborhood + houseStyle + houseZone + houseUtilities + remodelated + pool + livingArea + yearBuilt
+                        + overallQuality + overallCondition,
+  data    = train_set,
+  method  = "anova",
+  control = list(maxdepth = 7)
+  )
+rpart.plot(model_extra_2)
+```
+
+Modelo extra #3
+``` {r}
+model_extra_3 <- rpart(
+  formula = salePrice ~ neighborhood + houseStyle + houseZone + houseUtilities + remodelated + pool + livingArea + yearBuilt
+                        + overallQuality + overallCondition,
+  data    = train_set,
+  method  = "anova",
+  control = list(maxdepth = 14)
+  )
+rpart.plot(model_extra_3)
+```
+
+Vamos a determinar cual es el modelo que funciono mejor por medio de el coeficiente de determinación (R^2)
+
+```{r}
+y_pred_extra_1 <- predict(model_extra_1, newdata = test_set)
+abs_error_extra_1 <- abs(mean(y_pred_extra_1 - test_set$salePrice))
+
+y_pred_extra_2 <- predict(model_extra_2, newdata = test_set)
+abs_error_extra_2 <- abs(mean(y_pred_extra_2 - test_set$salePrice))
+
+y_pred_extra_3 <- predict(model_extra_3, newdata = test_set)
+abs_error_extra_3 <- abs(mean(y_pred_extra_3 - test_set$salePrice))
+```
+
+Se mirara cual de las MAE tiene el valor mas bajo
+
+```{r}
+model_results_extra <- data.frame(
+  c("Modelo Extra 1", "Modelo Extra 2", "Modelo Extra 3"),
+  c(0, 7, 14),
+  c(abs_error_extra_1, abs_error_extra_2, abs_error_extra_3)
+)
+
+colnames(model_results_extra) <- c("", "Profundidad", "MEA")
+kable(model_results_extra)
+```
+
+Como se puede ver en la tabla se llevo a cabo arboles con profundidad 0, 7 y 14. 
+La profundidad 0 fue el que se desempeño peor (Y tiene sentido ya que no hace lo esperado), mientras que la profundidad 7 y 14 se desempeñaron igual y son los que se desempeñaron mejor (hablando exclusivamente de los modelos extras)
+
+Entre todos los modelos el que mejor funciona es el modelo cuyo valor de profundidad es de 3
+
+### 12 - Repetir los análisis usando random forest como algoritmos de predicción 
+
+```{r}
+
+```
 
