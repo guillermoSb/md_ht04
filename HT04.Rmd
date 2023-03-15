@@ -412,9 +412,9 @@ kable(model_results_extra)
 ```
 
 Como se puede ver en la tabla se llevo a cabo arboles con profundidad 0, 7 y 14. 
-La profundidad 0 fue el que se desempeño peor (Y tiene sentido ya que no hace lo esperado), mientras que la profundidad 7 y 14 se desempeñaron igual y son los que se desempeñaron mejor (hablando exclusivamente de los modelos extras)
+La profundidad 0 fue el que se desempeño peor (Y tiene sentido ya que no hace lo esperado), mientras que la profundidad 7 y 14 se desempeñaron igual (Si la profundidad es mayor que 6 y como no hay muchos datos donde se pueda profundizar más es por eso que da lo mismo) y son los que se desempeñaron mejor (hablando exclusivamente de los modelos extras)
 
-Entre todos los modelos el que mejor funciona es el modelo cuyo valor de profundidad es de 3
+Entre todos los modelos el que mejor funciona es el modelo 2 cuyo valor de profundidad es de 3
 
 ### 12 - Repetir los análisis usando random forest como algoritmos de predicción 
 
