@@ -416,10 +416,10 @@ colnames(model_results_extra) <- c("", "Profundidad", "MEA")
 kable(model_results_extra)
 ```
 
-Como se puede ver en la tabla se llevo a cabo arboles con profundidad 0, 7 y 14. 
-La profundidad 0 fue el que se desempeño peor (Y tiene sentido ya que no hace lo esperado), mientras que la profundidad 7 y 14 se desempeñaron igual (Si la profundidad es mayor que 6 y como no hay muchos datos donde se pueda profundizar más es por eso que da lo mismo) y son los que se desempeñaron mejor (hablando exclusivamente de los modelos extras)
 
-Entre todos los modelos el que mejor funciona es el modelo 2 cuyo valor de profundidad es de 3
+El primer modelo extra con profundidad de 0 fue el que dio mayor valor de abs con 2414.90 lo cuál significa que estamos ante un modelo poco eficiente y poco funcional. Mientras que el segundo modelo extra y tercer modelo extra dio error de 2320.64 con profundidad de 7 y 14 de forma correspondiente, cuando se implementa a un modelo de arbol profundidad mayor que 4 este suele tener el mismo valor abs (2320.64) ya que no hay más datos en donde se pueda profundizar.
+
+Entre todos los modelos el que mejor funciona es el modelo 2 cuyo valor de profundidad es de 3 con un valor de abs de 1798.60
 
 ### 12 - Repetir los análisis usando random forest como algoritmos de predicción 
 
