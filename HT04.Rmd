@@ -439,3 +439,4 @@ ypred12 <- predict(randonForestMo, newdata = test_set12)
 ypred12 <- factor(ypred12)
 confusionMatrix(ypred12, y12)
 ```
+La exactitud de modelo con random forest fue de 84.9%. Se obtuvo una mayor exactitud que en el árbol de clasificación.
